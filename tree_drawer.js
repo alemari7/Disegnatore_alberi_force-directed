@@ -64,13 +64,13 @@ const simulation = d3.forceSimulation()
 
 function update() {
     const linkEnter = svg.selectAll(".link")
-        .data(links, d => d.target.id)
-        .enter().append("line")
+        .data(links)
+        .join("line")
         .attr("class", "link");
 
     const nodeEnter = svg.selectAll(".node")
         .data(nodes, d => d.id)
-        .enter().append("circle")
+        .join("circle")
         .attr("class", "node")
         .attr("r", 10)
         .attr("fill", d => getColor(d.depth)) // Imposta il colore in base alla profondità
@@ -117,36 +117,17 @@ function update() {
     }
 }
 
-function addNodeIncrementally(depth) {
-    if (nodes.length === 0) {
-        nodes.push(treeData);  // Aggiungi il nodo radice
-    } else {
-        const currentNodes = nodes.slice();
-        currentNodes.forEach(node => {
-            const children = node.children || [];
-            children.forEach(child => {
-                if (child.depth === depth && !nodes.includes(child)) {
-                    nodes.push(child);
-                    links.push({ source: node, target: child });
-                }
-            });
-        });
-    }
-    update();
-}
+function addNode(node, parent = null) {
+    const newNode = { id: node.data.name, depth: node.depth, x: width / 2, y: height / 2 };
+    nodes.push(newNode);
 
-function incrementalLayout() {
-    const maxDepth = getMaxDepth(treeData); // Trova la massima profondità dell'albero
-    for (let i = 0; i <= maxDepth; i++) {
-        addNodeIncrementally(i);
+    if (parent) {
+        links.push({ source: parent, target: newNode });
     }
-}
 
-function getMaxDepth(node) {
-    if (!node.children) {
-        return 0;
+    if (node.children) {
+        node.children.forEach(child => addNode(child, newNode));
     }
-    return 1 + d3.max(node.children, d => getMaxDepth(d));
 }
 
 function getColor(depth) {
@@ -155,4 +136,9 @@ function getColor(depth) {
     return colorScale(depth);
 }
 
-incrementalLayout();
+function initializeTree() {
+    addNode(treeData);
+    update();
+}
+
+initializeTree();
