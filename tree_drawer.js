@@ -10,49 +10,28 @@ const svg = d3.select("svg")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-const data = {
-    name: "root",
-    children: [
-        {
-            name: "child1",
-            children: [
-                {
-                    name: "grandchild1",
-                    children: [
-                        {
-                            name: "greatGrandchild1",
-                            children: [
-                                { name: "gggChild1" },
-                                { name: "gggChild2" }
-                            ]
-                        },
-                        { name: "greatGrandchild2" }
-                    ]
-                },
-                { name: "grandchild2" }
-            ]
-        },
-        {
-            name: "child2",
-            children: [
-                {
-                    name: "grandchild3",
-                    children: [
-                        { name: "greatGrandchild3" },
-                        { name: "greatGrandchild4" }
-                    ]
-                },
-                {
-                    name: "grandchild4",
-                    children: [
-                        { name: "greatGrandchild5" },
-                        { name: "greatGrandchild6" }
-                    ]
-                }
-            ]
+// Funzione per generare un albero casuale con profondità massima e numero massimo di figli per nodo
+function generateRandomTree(depth, maxChildren) {
+    const name = `node_${depth}`;
+    const children = [];
+    
+    const numChildren = getRandomInt(1, maxChildren);
+    for (let i = 0; i < numChildren; i++) {
+        if (depth < 3) {  // Limito la profondità per l'esempio
+            children.push(generateRandomTree(depth + 1, maxChildren));
         }
-    ]
-};
+    }
+    
+    return { name, children };
+}
+
+// Funzione ausiliaria per ottenere un intero casuale in un intervallo specificato
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Genero un albero casuale con profondità 0 (radice) e massimo 5 figli per nodo
+const data = generateRandomTree(0, 5);
 
 const treeLayout = d3.tree().size([svgHeight, svgWidth]);
 const root = d3.hierarchy(data);
@@ -121,5 +100,5 @@ function getColor(depth) {
     return colorScale(depth);
 }
 
-// Start the animation with the root node
+// Avvio dell'animazione con il nodo radice generato casualmente
 addNodesRecursively(root, 1000);
