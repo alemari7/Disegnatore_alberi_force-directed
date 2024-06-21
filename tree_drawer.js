@@ -1,8 +1,14 @@
-const width = 1800;
-const height = 1200;
+const width = window.innerWidth;
+const height = window.innerHeight;
+const margin = { top: 20, right: 120, bottom: 20, left: 120 };
+const svgWidth = width - margin.right - margin.left;
+const svgHeight = height - margin.top - margin.bottom;
+
 const svg = d3.select("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
 const data = {
     name: "root",
@@ -48,97 +54,72 @@ const data = {
     ]
 };
 
-// Aggiungi l'attributo depth durante la creazione della gerarchia
-const treeData = d3.hierarchy(data, d => d.children);
-treeData.descendants().forEach((d, i) => {
-    d.depth = d.depth;  // Assegna la profondità corretta
-});
+const treeLayout = d3.tree().size([svgHeight, svgWidth]);
+const root = d3.hierarchy(data);
+treeLayout(root);
 
 let nodes = [];
 let links = [];
 
-const simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(d => d.id).distance(50))
-    .force("charge", d3.forceManyBody().strength(-200))
-    .force("center", d3.forceCenter(width / 2, height / 2));
-
 function update() {
-    const linkEnter = svg.selectAll(".link")
-        .data(links)
-        .join("line")
-        .attr("class", "link");
+    const link = svg.selectAll(".link")
+        .data(links, d => d.target.id);
 
-    const nodeEnter = svg.selectAll(".node")
-        .data(nodes, d => d.id)
-        .join("circle")
+    const linkEnter = link.enter().append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkHorizontal()
+            .x(d => d.y)
+            .y(d => d.x));
+
+    const node = svg.selectAll(".node")
+        .data(nodes, d => d.id);
+
+    const nodeEnter = node.enter().append("circle")
         .attr("class", "node")
         .attr("r", 10)
-        .attr("fill", d => getColor(d.depth)) // Imposta il colore in base alla profondità
-        .call(d3.drag()
-            .on("start", dragStarted)
-            .on("drag", dragged)
-            .on("end", dragEnded));
+        .attr("fill", d => getColor(d.depth))
+        .attr("transform", d => `translate(${d.y},${d.x})`);
 
-    simulation.nodes(nodes)
-        .on("tick", ticked);
-
-    simulation.force("link")
-        .links(links);
-
-    simulation.alpha(1).restart();
-
-    function ticked() {
-        linkEnter
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
-
-        nodeEnter
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
-    }
-
-    function dragStarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
-
-    function dragEnded(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
+    nodeEnter.append("title").text(d => d.data.name);
 }
 
-function addNode(node, parent = null) {
-    const newNode = { id: node.data.name, depth: node.depth, x: width / 2, y: height / 2 };
+function addNodesRecursively(node, delay = 1000) {
+    const newNode = {
+        id: node.data.name,
+        data: node.data,
+        depth: node.depth,
+        x: node.x,
+        y: node.y
+    };
     nodes.push(newNode);
 
-    if (parent) {
-        links.push({ source: parent, target: newNode });
+    if (node.parent) {
+        const newLink = {
+            source: {
+                id: node.parent.data.name,
+                x: node.parent.x,
+                y: node.parent.y
+            },
+            target: newNode
+        };
+        links.push(newLink);
     }
 
+    update();
+
     if (node.children) {
-        node.children.forEach(child => addNode(child, newNode));
+        setTimeout(() => {
+            node.children.forEach((child) => {
+                addNodesRecursively(child, delay);
+            });
+        }, delay);
     }
 }
 
 function getColor(depth) {
-    // Imposta un colore diverso per ciascuna profondità
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
     return colorScale(depth);
 }
 
-function initializeTree() {
-    addNode(treeData);
-    update();
-}
-
-initializeTree();
+// Start the animation with the root node
+addNodesRecursively(root, 1000);
