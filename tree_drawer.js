@@ -1,25 +1,27 @@
+// Definisci i margini e le dimensioni del contenitore SVG
 const margin = { top: 20, right: 40, bottom: 20, left: 40 };
 const width = window.innerWidth * 1.7;
 const height = window.innerHeight * 3;
 const svgWidth = width;
 const svgHeight = height;
 
+// Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
     .attr("width", svgWidth + margin.left + margin.right)
     .attr("height", svgHeight + margin.top + margin.bottom);
 
-// Aggiungi la funzionalità di zoom
+// Aggiungi un gruppo <g> all'interno dell'SVG per contenere tutti gli elementi grafici
 const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-// Configurazione dello zoom
+// Configura lo zoom con D3, specificando i limiti di scala e l'evento di zoom
 const zoom = d3.zoom()
     .scaleExtent([0.25, 3])
     .on("zoom", (event) => {
         g.attr("transform", event.transform);
     });
 
-// Applica lo zoom al contenitore SVG
+// Applica la funzionalità di zoom al contenitore SVG
 svg.call(zoom);
 
 // Prevenire lo scroll del mouse per abilitare solo lo zoom
@@ -28,9 +30,11 @@ document.getElementById('scrollableDiv').addEventListener('wheel', function(even
 }, { passive: false });
 
 function simulationRun() {
+    // Ottieni i valori di profondità massima e numero massimo di figli dagli input HTML
     const maxDepth = parseInt(document.getElementById('depth').value);
     const maxChildren = parseInt(document.getElementById('maxChildren').value);
 
+    // Genera un albero casuale con la profondità e il numero di figli specificati
     function generateRandomTree(depth, maxChildren) {
         const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`;
         const children = [];
@@ -45,6 +49,7 @@ function simulationRun() {
         return { name, children };
     }
 
+    // Funzione di utilità per generare un numero intero casuale tra min e max
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -52,19 +57,21 @@ function simulationRun() {
     let startTime;
     let lastNodeTime;
 
+    // Genera i dati dell'albero e crea una gerarchia D3
     const data = generateRandomTree(0, maxChildren);
-
     const root = d3.hierarchy(data);
 
     let nodes = [];
     let links = [];
 
+    // Configura la simulazione di forza D3 con nodi e link
     const simulation = d3.forceSimulation(nodes)
        .force("link", d3.forceLink(links).id(d => d.id).distance(20))
        .force("charge", d3.forceManyBody().strength(-100))
        .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2))
        .on("tick", ticked);
 
+    // Funzione per aggiornare la posizione dei nodi e dei link ad ogni "tick" della simulazione
     function ticked() {
         const link = g.selectAll(".link")
            .data(links, d => d.target.id);
@@ -100,6 +107,7 @@ function simulationRun() {
 
         node.exit().remove();
 
+        // Calcola e stampa il tempo di esecuzione totale una volta che tutti i nodi sono stati aggiunti
         if (nodes.length === root.descendants().length) {
             lastNodeTime = performance.now();
             const executionTime = (lastNodeTime - startTime) / 1000;
@@ -107,6 +115,7 @@ function simulationRun() {
         }
     }
 
+    // Aggiungi ricorsivamente i nodi e i link alla simulazione con un ritardo specificato
     function addNodesRecursively(node, delay = 2000) {
         if (!startTime) {
             startTime = performance.now();
@@ -141,6 +150,7 @@ function simulationRun() {
         }
     }
 
+    // Funzione per ottenere un colore in base al livello del nodo
     function getColor(level) {
         // Definisci una scala di colori che corrisponde ai livelli degli internodi
         const colorLevels = [0, 1, 2, 3, 4]; // Aggiungi o rimuovi valori in base alla profondità massima desiderata
@@ -150,6 +160,7 @@ function simulationRun() {
         return colors[level];
     }
 
+    // Funzioni di gestione del drag per i nodi
     function dragStarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -167,14 +178,16 @@ function simulationRun() {
         d.fy = null;
     }
 
+    // Avvia l'aggiunta ricorsiva dei nodi all'albero
     addNodesRecursively(root, 2000);
 }
 
+// Funzione per eseguire la simulazione al click di un pulsante
 function onClick() {
     this.simulationRun();
 }
 
-// Centrare la scrollbar
+// Centrare la scrollbar nel div scrollabile
 var scrollableDiv = document.getElementById('scrollableDiv');
 var halfContentWidth = scrollableDiv.scrollWidth / 4.25;
 scrollableDiv.scrollLeft = halfContentWidth;
