@@ -32,9 +32,11 @@ Questo progetto dimostra come creare un layout a albero dinamico con animazione 
 
   - **Misurazione dei Tempi di Esecuzione**: Misurazione del tempo totale di esecuzione della simulazione force-directed e stampa del risultato sulla console.
 
+- **index.css**: File CSS che definisce lo stile visivo per l'header, i controlli, il contenitore della visualizzazione, e i nodi e collegamenti dell'albero.
+
 ## Utilizzo
 
-1. Clona la repository o scarica i file (`index.html`, `classico.html`, `tree_drawer.js`, e `force-directed-classico.js`).
+1. Clona la repository o scarica i file (`index.html`, `classico.html`, `tree_drawer.js`, `force-directed-classico.js`, e `styles.css`).
 2. Apri `index.html` e `classico.html` in un browser web che supporta JavaScript e SVG.
 3. Il layout a albero con nodi animati si renderizzerà nella finestra del browser. I nodi appariranno gradualmente, dimostrando la struttura gerarchica.
 
