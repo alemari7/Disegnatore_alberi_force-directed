@@ -21,6 +21,8 @@ Questo progetto dimostra come creare un layout a albero dinamico con animazione 
    - **Gestione dell'Animazione**: Aggiunge nodi in modo ricorsivo con un ritardo per simulare l'animazione di crescita dell'albero.
    
    - **Interazione con i Nodi**: Implementa il trascinamento dei nodi per spostarli manualmente all'interno del canvas.
+ 
+   - **Misurazione dei Tempi di Esecuzione**: Misurazione del tempo totale di esecuzione della simulazione force-directed e stampa del risultato sulla console. Tempo totale di esecuzione rilevato con profondità 5 e numero massimo di figli pari a 5: 15.014 secondi
 
 - **force-directed-classico.js**: File JavaScript aggiunto per implementare un algoritmo force-directed classico con D3.js. Questo file contiene:
 
@@ -32,9 +34,9 @@ Questo progetto dimostra come creare un layout a albero dinamico con animazione 
 
   - **Gestione del Drag-and-Drop**: Implementazione del drag-and-drop per interagire con i nodi.
 
-  - **Misurazione dei Tempi di Esecuzione**: Misurazione del tempo totale di esecuzione della simulazione force-directed e stampa del risultato sulla console.
+  - **Misurazione dei Tempi di Esecuzione**: Misurazione del tempo totale di esecuzione della simulazione force-directed e stampa del risultato sulla console. Tempo totale di esecuzione: 5.211 secondi
 
-- **index.css**: File CSS che definisce lo stile visivo per l'header, i controlli, il contenitore della visualizzazione, e i nodi e collegamenti dell'albero.
+- **index.css**: File CSS che definisce lo stile visivo per l'header, i controlli, il contenitore della visualizzazione, e i nodi e collegamenti dell'albero. 
 
 ## Utilizzo
 
