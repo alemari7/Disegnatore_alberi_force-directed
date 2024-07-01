@@ -116,7 +116,7 @@ function simulationRun() {
     }
 
     // Aggiungi ricorsivamente i nodi e i link alla simulazione con un ritardo specificato
-    function addNodesRecursively(node, delay = 2000) {
+    function addNodesRecursively(node, delay = 3000) {
         if (!startTime) {
             startTime = performance.now();
         }
