@@ -1,0 +1,72 @@
+body {
+    background-color: #f0f0f0; /* Grigio molto chiaro */
+    margin: 0; /* Rimuove il margine predefinito del body */
+}
+
+header {
+    background-color: #333; /* Colore di sfondo della barra header */
+    color: #fff; /* Colore del testo */
+    padding: 0.25% 1%; /* Padding interno */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombra leggera */
+    display: flex; /* Utilizza il layout flessibile */
+    justify-content: space-between; /* Allinea gli elementi ai lati opposti */
+    align-items: center; /* Centra verticalmente */
+}
+
+header h1 {
+    margin-left: 1% /* Margine a sinistra per l'h1 */
+}
+
+.header-controls {
+    display: flex; /* Utilizza il layout flessibile per i controlli */
+    align-items: center; /* Centra verticalmente */
+    margin-right: 1%; /* Margine a destra per i controlli */
+}
+
+.header-controls div {
+    margin-right: 1%;
+}
+
+.header-button {
+    background-color: #4CAF50; /* Colore di sfondo del pulsante */
+    color: white; /* Colore del testo */
+    border: none; /* Nessun bordo */
+    padding: 10px 20px; /* Padding interno */
+    text-align: center; /* Allinea il testo al centro */
+    text-decoration: none; /* Nessun sottolineato */
+    display: inline-block; /* Mostra come blocco inline */
+    border-radius: 5px; /* Angoli arrotondati */
+    transition: background-color 0.3s ease; /* Transizione per il colore di sfondo */
+    cursor: pointer; /* Cambia il cursore al passaggio sopra il pulsante */
+}
+
+.header-button:hover {
+    background-color: #45a049; /* Cambia il colore di sfondo al passaggio del mouse */
+}
+
+.header-button:active {
+    transform: translateY(1px); /* Effetto di spinta verso il basso al click */
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 15px; /* Angoli smussati */
+    margin: 2% 5% 1% 5%; /* top: 10px, right: 20px, bottom: 15px, left: 5px */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Ombra leggera */
+    overflow: auto;
+}
+
+.container::-webkit-scrollbar {
+    width: 0; /* Nasconde la scrollbar su Chrome e Safari */
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 3px;
+}
+
+.node {
+    stroke: #000;
+    stroke-width: 1.5px;
+}

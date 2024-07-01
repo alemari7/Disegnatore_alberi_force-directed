@@ -4,64 +4,22 @@
     <meta charset="UTF-8">
     <title>Tree Layout with Animation</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        body {
-            background-color: #f0f0f0; /* Grigio molto chiaro */
-            margin: 0; /* Rimuove il margine predefinito del body */
-        }
-        header {
-            background-color: #333; /* Colore di sfondo della barra header */
-            color: #fff; /* Colore del testo */
-            padding: 1% 2%; /* Padding interno */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombra leggera */
-            display: flex; /* Utilizza il layout flessibile */
-            justify-content: space-between; /* Allinea gli elementi ai lati opposti */
-            align-items: center; /* Centra verticalmente */
-        }
-        .container {
-            background-color: #fff;
-            border-radius: 15px; /* Angoli smussati */
-            margin: 2% 5% 1% 5%; /* top: 10px, right: 20px, bottom: 15px, left: 5px */
-            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Ombra leggera */
-            overflow: auto;
-        }
-        .container::-webkit-scrollbar {
-            width: 0; /* Nasconde la scrollbar su Chrome e Safari */
-        }
-        .link {
-            fill: none;
-            stroke: #ccc;
-            stroke-width: 3px;
-        }
-        .node {
-            stroke: #000;
-            stroke-width: 1.5px;
-        }
-        .header-button {
-            background-color: #4CAF50; /* Colore di sfondo del pulsante */
-            color: white; /* Colore del testo */
-            border: none; /* Nessun bordo */
-            padding: 10px 20px; /* Padding interno */
-            text-align: center; /* Allinea il testo al centro */
-            text-decoration: none; /* Nessun sottolineato */
-            display: inline-block; /* Mostra come blocco inline */
-            margin-right: 10px; /* Margine a destra */
-            border-radius: 5px; /* Angoli arrotondati */
-            transition: background-color 0.3s ease; /* Transizione per il colore di sfondo */
-            cursor: pointer; /* Cambia il cursore al passaggio sopra il pulsante */
-        }
-        .header-button:hover {
-            background-color: #45a049; /* Cambia il colore di sfondo al passaggio del mouse */
-        }
-        .header-button:active {
-            transform: translateY(1px); /* Effetto di spinta verso il basso al click */
-        }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
     <header>
         <h1>Force-directed tree designer</h1>
-        <button class="header-button" onclick="onClick()">Generate!</button>
+        <div class="header-controls">
+            <div>
+                <label for="depth">Depth:</label>
+                <input type="number" id="depth" value="3" min="1" max="5">
+            </div>
+            <div>
+                <label for="maxChildren">Max Children:</label>
+                <input type="number" id="maxChildren" value="4" min="1" max="7">
+            </div>
+            <button class="header-button" onclick="onClick()">Generate!</button>
+        </div>
     </header>
     <div class="container">
         <svg></svg>

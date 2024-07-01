@@ -11,6 +11,9 @@ const svg = d3.select("svg")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
 function simulationRun(){
+    const maxDepth = parseInt(document.getElementById('depth').value);
+    const maxChildren = parseInt(document.getElementById('maxChildren').value);
+
     // Funzione per generare un albero casuale con profondità massima e numero massimo di figli per nodo
     function generateRandomTree(depth, maxChildren) {
         const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`;
@@ -18,7 +21,7 @@ function simulationRun(){
         
         const numChildren = getRandomInt(1, maxChildren);
         for (let i = 0; i < numChildren; i++) {
-            if (depth < 3) {  // Limito la profondità per l'esempio
+            if (depth < maxDepth) { 
                 children.push(generateRandomTree(depth + 1, maxChildren));
             }
         }
@@ -36,7 +39,7 @@ function simulationRun(){
     let lastNodeTime;
 
     // Genero un albero casuale con profondità 0 (radice) e massimo 4 figli per nodo
-    const data = generateRandomTree(0, 4);
+    const data = generateRandomTree(0, maxChildren);
 
     // Convert tree structure to nodes and links
     const root = d3.hierarchy(data);
@@ -153,8 +156,6 @@ function simulationRun(){
 
 
 function onClick(){
-   
-        // Aggiungi nodi ricorsivamente
         this.simulationRun()
 }
 
