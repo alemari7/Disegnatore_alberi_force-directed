@@ -10,6 +10,22 @@ const svg = d3.select("svg")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+/* scrollbar management */
+// Ottieni l'elemento scrollabile
+var scrollableDiv = document.getElementById('scrollableDiv');
+      
+// Calcola la metà della larghezza del contenuto
+var halfContentWidth = scrollableDiv.scrollWidth / 4.25;
+      
+// Imposta il valore di scrollLeft per centrare la scrollbar orizzontale
+scrollableDiv.scrollLeft = halfContentWidth;
+
+// Calcola la metà dell'altezza del contenuto
+var halfContentHeight = scrollableDiv.scrollHeight / 2.75;
+
+// Imposta il valore di scrollTop per centrare la scrollbar verticale
+scrollableDiv.scrollTop = halfContentHeight;   
+    
 function simulationRun(){
     const maxDepth = parseInt(document.getElementById('depth').value);
     const maxChildren = parseInt(document.getElementById('maxChildren').value);
