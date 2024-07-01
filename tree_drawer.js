@@ -5,10 +5,27 @@ const svgWidth = width;
 const svgHeight = height;
 
 const svg = d3.select("svg")
-   .attr("width", svgWidth + margin.left + margin.right)
-   .attr("height", svgHeight + margin.top + margin.bottom)
-   .append("g")
-   .attr("transform", `translate(${margin.left},${margin.top})`);
+    .attr("width", svgWidth + margin.left + margin.right)
+    .attr("height", svgHeight + margin.top + margin.bottom);
+
+// Aggiungi la funzionalità di zoom
+const g = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+// Configurazione dello zoom
+const zoom = d3.zoom()
+    .scaleExtent([0.25, 3])
+    .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+    });
+
+// Applica lo zoom al contenitore SVG
+svg.call(zoom);
+
+// Prevenire lo scroll del mouse per abilitare solo lo zoom
+document.getElementById('scrollableDiv').addEventListener('wheel', function(event) {
+    event.preventDefault();
+}, { passive: false });
 
 function simulationRun() {
     const maxDepth = parseInt(document.getElementById('depth').value);
@@ -49,7 +66,7 @@ function simulationRun() {
        .on("tick", ticked);
 
     function ticked() {
-        const link = svg.selectAll(".link")
+        const link = g.selectAll(".link")
            .data(links, d => d.target.id);
 
         link.enter().append("line")
@@ -63,7 +80,7 @@ function simulationRun() {
 
         link.exit().remove();
 
-        const node = svg.selectAll(".node")
+        const node = g.selectAll(".node")
            .data(nodes, d => d.id);
 
         const nodeEnter = node.enter().append("circle")
@@ -156,3 +173,10 @@ function simulationRun() {
 function onClick() {
     this.simulationRun();
 }
+
+// Centrare la scrollbar
+var scrollableDiv = document.getElementById('scrollableDiv');
+var halfContentWidth = scrollableDiv.scrollWidth / 4.25;
+scrollableDiv.scrollLeft = halfContentWidth;
+var halfContentHeight = scrollableDiv.scrollHeight / 2.75;
+scrollableDiv.scrollTop = halfContentHeight;
