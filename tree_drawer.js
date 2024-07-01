@@ -1,6 +1,6 @@
 const margin = { top: 20, right: 40, bottom: 20, left: 40 }; // Ridotti i margini
-const width = window.innerWidth *0.90;
-const height = window.innerHeight *0.8;
+const width = window.innerWidth *1.7;
+const height = window.innerHeight *3;
 const svgWidth = width
 const svgHeight = height
 

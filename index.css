@@ -50,15 +50,19 @@ header h1 {
 
 .container {
     background-color: #fff;
+    height: 80vh; /* Altezza del 50% del viewport height */
     border-radius: 15px; /* Angoli smussati */
     margin: 2% 5% 1% 5%; /* top: 10px, right: 20px, bottom: 15px, left: 5px */
     box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Ombra leggera */
     overflow: auto;
+    overflow-x: scroll; /* abilita lo scrolling orizzontale */
+    white-space: nowrap; /* evita il wrapping del contenuto */
 }
 
 .container::-webkit-scrollbar {
-    width: 0; /* Nasconde la scrollbar su Chrome e Safari */
+    width: 0;  /*Nasconde la scrollbar su Chrome e Safari*/
 }
+
 
 .link {
     fill: none;
@@ -70,3 +74,4 @@ header h1 {
     stroke: #000;
     stroke-width: 1.5px;
 }
+
