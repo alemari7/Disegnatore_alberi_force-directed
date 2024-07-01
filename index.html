@@ -16,7 +16,7 @@
             </div>
             <div>
                 <label for="maxChildren">Max Children:</label>
-                <input type="number" id="maxChildren" value="4" min="1" max="7">
+                <input type="number" id="maxChildren" value="4" min="1" max="5">
             </div>
             <button class="header-button" onclick="onClick()">Generate!</button>
         </div>
@@ -25,22 +25,5 @@
         <svg></svg>
     </div>
     <script src="tree_drawer.js"></script>
-    <script>
-        // Ottieni l'elemento scrollabile
-        var scrollableDiv = document.getElementById('scrollableDiv');
-      
-        // Calcola la metà della larghezza del contenuto
-        var halfContentWidth = scrollableDiv.scrollWidth / 4.25;
-      
-        // Imposta il valore di scrollLeft per centrare la scrollbar orizzontale
-        scrollableDiv.scrollLeft = halfContentWidth;
-
-        // Calcola la metà dell'altezza del contenuto
-        var halfContentHeight = scrollableDiv.scrollHeight / 2.75;
-
-        // Imposta il valore di scrollTop per centrare la scrollbar verticale
-        scrollableDiv.scrollTop = halfContentHeight;
-      </script>
-      
 </body>
 </html>
