@@ -30,6 +30,10 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Variabili per misurare il tempo totale di esecuzione e l'ultimo nodo inserito
+let startTime;
+let lastNodeTime;
+
 // Genero un albero casuale con profondità 0 (radice) e massimo 5 figli per nodo
 const data = generateRandomTree(0, 6);
 
@@ -79,9 +83,20 @@ function ticked() {
         .attr("cy", d => d.y);
 
     node.exit().remove();
+
+    // Verifica se tutti i nodi sono stati aggiunti
+    if (nodes.length === root.descendants().length) {
+        lastNodeTime = performance.now();
+        const executionTime = (lastNodeTime - startTime) / 1000; // Tempo in secondi
+        console.log(`Tempo totale di esecuzione fino all'ultimo nodo: ${executionTime.toFixed(3)} secondi`);
+    }
 }
 
 function addNodesRecursively(node, delay = 2000) {
+    if (!startTime) {
+        startTime = performance.now(); // Registra il tempo di inizio se non è stato registrato ancora
+    }
+
     const newNode = {
         id: node.data.name,
         data: node.data,
