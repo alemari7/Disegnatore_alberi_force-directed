@@ -54,21 +54,22 @@ function simulationRun() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    //Definisco variabili per specificare l'istante in cui inizia l'aggiunta dei nodi e l'istante in cui si inserisce l'ultimo nodo
     let startTime;
     let lastNodeTime;
 
     // Genera i dati dell'albero e crea una gerarchia D3
     const data = generateRandomTree(0, maxChildren);
-    const root = d3.hierarchy(data);
+    const root = d3.hierarchy(data); //usata per costruire l'albero in visualizzazione
 
-    let nodes = [];
+    let nodes = []; //inizializzo le liste che contengono nodi e archi
     let links = [];
 
     // Configura la simulazione di forza D3 con nodi e link
     const simulation = d3.forceSimulation(nodes)
-       .force("link", d3.forceLink(links).id(d => d.id).distance(20))
-       .force("charge", d3.forceManyBody().strength(-100))
-       .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2))
+       .force("link", d3.forceLink(links).id(d => d.id).distance(20)) //forza che mantiene i collegamenti tra i nodi. distance(20) imposta la distanza preferita tra i nodi collegati
+       .force("charge", d3.forceManyBody().strength(-100)) //forza di repulsione tra i nodi, con strength(-100) per tenerli separati
+       .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2)) //f x   orza che centra i nodi all'interno dell'SVG, posizionandoli al centro dell'area
        .on("tick", ticked);
 
     // Funzione per aggiornare la posizione dei nodi e dei link ad ogni "tick" della simulazione
