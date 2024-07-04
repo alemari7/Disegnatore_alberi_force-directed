@@ -4,7 +4,9 @@ const width = window.innerWidth * 1.7;
 const height = window.innerHeight * 3;
 const svgWidth = width;
 const svgHeight = height;
-const delay = 2000;
+
+const delay = 2000;         // valore del ritardo per l'aggiunta incrementale dei nodi
+const randomBool = true;   // variabile booleana per costruzione del grafo randomico o completo
 
 // Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
@@ -40,8 +42,15 @@ function simulationRun() {
         const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`;
 
         const children = [];
+        var numChildren;
 
-        const numChildren = getRandomInt(1, maxChildren);
+        if (randomBool) {
+            numChildren = getRandomInt(1, maxChildren);
+        }
+        else {
+            numChildren = maxChildren;
+        }
+
         for (let i = 0; i < numChildren; i++) {
             if (depth < maxDepth) {
                 children.push(generateRandomTree(depth + 1, maxChildren));
