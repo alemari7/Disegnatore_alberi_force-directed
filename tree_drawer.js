@@ -4,6 +4,7 @@ const width = window.innerWidth * 1.7;
 const height = window.innerHeight * 3;
 const svgWidth = width;
 const svgHeight = height;
+const delay = 2000;
 
 // Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
@@ -36,14 +37,14 @@ function simulationRun() {
 
     // Genera un albero casuale con la profondità e il numero di figli specificati
     function generateRandomTree(depth, maxChildren) {
-        const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`; //crea un nome univoco per il nodo, che include la profondità corrente (depth) e una stringa casuale generata usando Math.random().
+        const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`;
 
         const children = [];
 
-        const numChildren = getRandomInt(1, maxChildren); //genera un numero casuale di figli per il nodo, compreso tra 1 e maxChildren.
-        for (let i = 0; i < numChildren; i++) { 
-            if (depth < maxDepth) { //se la profondità corrente (depth) è inferiore alla profondità massima (maxDepth), chiama ricorsivamente generateRandomTree per creare il sottoalbero del figlio, incrementando la profondità di 1.
-                children.push(generateRandomTree(depth + 1, maxChildren)); //aggiunge il sottoalbero generato all'array children
+        const numChildren = getRandomInt(1, maxChildren);
+        for (let i = 0; i < numChildren; i++) {
+            if (depth < maxDepth) {
+                children.push(generateRandomTree(depth + 1, maxChildren));
             }
         }
 
@@ -55,61 +56,66 @@ function simulationRun() {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    // Funzione per ottenere un piccolo offset randomico
+    function getRandomOffset() {
+        const maxOffset = 45; // Valore massimo dell'offset
+        return (Math.random() - 0.5) * maxOffset; // Offset randomico tra -maxOffset/2 e +maxOffset/2
+    }
+
     //Definisco variabili per specificare l'istante in cui inizia l'aggiunta dei nodi e l'istante in cui si inserisce l'ultimo nodo
     let startTime;
     let lastNodeTime;
 
     // Genera i dati dell'albero e crea una gerarchia D3
     const data = generateRandomTree(0, maxChildren);
-    const root = d3.hierarchy(data); //usata per costruire l'albero in visualizzazione
+    const root = d3.hierarchy(data);
 
-    let nodes = []; //inizializzo le liste che contengono nodi e archi
+    let nodes = [];
     let links = [];
 
     // Configura la simulazione di forza D3 con nodi e link
     const simulation = d3.forceSimulation(nodes)
-       .force("link", d3.forceLink(links).id(d => d.id).distance(20)) //forza che mantiene i collegamenti tra i nodi. distance(20) imposta la distanza preferita tra i nodi collegati
-       .force("charge", d3.forceManyBody().strength(-100)) //forza di repulsione tra i nodi, con strength(-100) per tenerli separati
-       .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2)) //forza che centra i nodi all'interno dell'SVG, posizionandoli al centro dell'area
-       .on("tick", ticked);
+        .force("link", d3.forceLink(links).id(d => d.id).distance(20))
+        .force("charge", d3.forceManyBody().strength(-100))
+        .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2))
+        .on("tick", ticked);
 
     // Funzione per aggiornare la posizione dei nodi e dei link ad ogni "tick" della simulazione
     function ticked() {
         const link = g.selectAll(".link")
-           .data(links, d => d.target.id);
+            .data(links, d => d.target.id);
 
         link.enter().append("line")
-           .attr("class", "link")
-           .merge(link)
-           .attr("stroke-width", 1)
-           .attr("x1", d => d.source.x)
-           .attr("y1", d => d.source.y)
-           .attr("x2", d => d.target.x)
-           .attr("y2", d => d.target.y);
+            .attr("class", "link")
+            .merge(link)
+            .attr("stroke-width", 1)
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
 
         link.exit().remove();
 
         const node = g.selectAll(".node")
-           .data(nodes, d => d.id);
+            .data(nodes, d => d.id);
 
         const nodeEnter = node.enter().append("circle")
-           .attr("class", "node")
-           .attr("r", 7)
-           .attr("fill", d => d.color) // Utilizza il colore definito per ciascun nodo
-           .call(d3.drag()
-               .on("start", dragStarted)
-               .on("drag", dragged)
-               .on("end", dragEnded));
+            .attr("class", "node")
+            .attr("r", 7)
+            .attr("fill", d => d.color)
+            .call(d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded));
 
         nodeEnter.append("title").text(d => d.data.name);
 
         nodeEnter.merge(node)
-           .attr("cx", d => d.x)
-           .attr("cy", d => d.y);
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
 
         node.exit().remove();
 
-        // Calcola e stampa il tempo di esecuzione totale una volta che tutti i nodi sono stati aggiunti
         if (nodes.length === root.descendants().length) {
             lastNodeTime = performance.now();
             const executionTime = (lastNodeTime - startTime) / 1000;
@@ -118,7 +124,7 @@ function simulationRun() {
     }
 
     // Aggiungi ricorsivamente i nodi e i link alla simulazione con un ritardo specificato
-    function addNodesRecursively(node, delay = 3000) {
+    function addNodesRecursively(node, delay) {
         if (!startTime) {
             startTime = performance.now();
         }
@@ -127,7 +133,9 @@ function simulationRun() {
             id: node.data.name,
             data: node.data,
             depth: node.depth,
-            color: getColor(node.depth) // Passa il livello del nodo qui
+            color: getColor(node.depth),
+            x: node.parent ? node.parent.data.x + getRandomOffset() : svgWidth / 2,
+            y: node.parent ? node.parent.data.y + getRandomOffset() : svgHeight / 2
         };
         nodes.push(newNode);
 
@@ -139,14 +147,17 @@ function simulationRun() {
             links.push(newLink);
         }
 
-        simulation.nodes(nodes); //aggiorna la simulazione D3 con i nuovi nodi e link
+        simulation.nodes(nodes);
         simulation.force("link").links(links);
-        simulation.alpha(1).restart(); //imposta la forza dei link e riavvia la simulazione con alpha(1).restart() per ricalcolare le posizioni.
+        simulation.alpha(1).restart();
 
-        if (node.children) { //se il nodo ha figli, aggiungili ricorsivamente con un ritardo
+        node.data.x = newNode.x;
+        node.data.y = newNode.y;
+
+        if (node.children) {
             setTimeout(() => {
-                node.children.forEach((child) => { 
-                    addNodesRecursively(child, delay); //aggiungi i nodi figli ricorsivamente
+                node.children.forEach((child) => {
+                    addNodesRecursively(child, delay);
                 });
             }, delay);
         }
@@ -154,34 +165,32 @@ function simulationRun() {
 
     // Funzione per ottenere un colore in base al livello del nodo
     function getColor(level) {
-        // Definisci una scala di colori che corrisponde ai livelli degli internodi
-        const colorLevels = [0, 1, 2, 3, 4]; // Aggiungi o rimuovi valori in base alla profondità massima desiderata
-        const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"]; // Esempio di colori
+        const colorLevels = [0, 1, 2, 3, 4];
+        const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff"];
 
-        // Restituisci il colore corrispondente al livello del nodo
         return colors[level];
     }
 
     // Funzioni di gestione del drag per i nodi
     function dragStarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x; //imposta la posizione fissa del nodo durante il trascinamento. Questo blocca il nodo alla posizione corrente, permettendo all'utente di trascinarlo.
+        d.fx = d.x;
         d.fy = d.y;
     }
 
     function dragged(event, d) {
-        d.fx = event.x; //aggiorna le coordinate fisse del nodo (fx e fy) con le coordinate correnti dell'evento di trascinamento (event.x e event.y). Questo permette di spostare il nodo seguendo il movimento del mouse.
+        d.fx = event.x;
         d.fy = event.y;
     }
 
-    function dragEnded(event, d) { //Se non ci sono altri eventi di trascinamento in corso (!event.active), imposta il target di alpha a 0. Questo diminuisce l'energia della simulazione, permettendole di stabilizzarsi lentamente.
+    function dragEnded(event, d) {
         if (!event.active) simulation.alphaTarget(0);
-        d.fx = null; //Rimuove le coordinate fisse del nodo, permettendogli di tornare a muoversi liberamente.
+        d.fx = null;
         d.fy = null;
     }
 
     // Avvia l'aggiunta ricorsiva dei nodi all'albero
-    addNodesRecursively(root, 2000);
+    addNodesRecursively(root, delay);
 }
 
 // Funzione per eseguire la simulazione al click di un pulsante
