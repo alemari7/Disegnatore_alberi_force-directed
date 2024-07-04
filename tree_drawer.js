@@ -40,7 +40,7 @@ function simulationRun() {
 
         const children = [];
 
-        const numChildren = getRandomInt(1, maxChildren);
+        const numChildren = getRandomInt(1, maxChildren); //genera un numero casuale di figli per il nodo, compreso tra 1 e maxChildren.
         for (let i = 0; i < numChildren; i++) { 
             if (depth < maxDepth) { //se la profondità corrente (depth) è inferiore alla profondità massima (maxDepth), chiama ricorsivamente generateRandomTree per creare il sottoalbero del figlio, incrementando la profondità di 1.
                 children.push(generateRandomTree(depth + 1, maxChildren)); //aggiunge il sottoalbero generato all'array children
@@ -70,7 +70,7 @@ function simulationRun() {
     const simulation = d3.forceSimulation(nodes)
        .force("link", d3.forceLink(links).id(d => d.id).distance(20)) //forza che mantiene i collegamenti tra i nodi. distance(20) imposta la distanza preferita tra i nodi collegati
        .force("charge", d3.forceManyBody().strength(-100)) //forza di repulsione tra i nodi, con strength(-100) per tenerli separati
-       .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2)) //f x   orza che centra i nodi all'interno dell'SVG, posizionandoli al centro dell'area
+       .force("center", d3.forceCenter(svgWidth / 2, svgHeight / 2)) //forza che centra i nodi all'interno dell'SVG, posizionandoli al centro dell'area
        .on("tick", ticked);
 
     // Funzione per aggiornare la posizione dei nodi e dei link ad ogni "tick" della simulazione
@@ -139,14 +139,14 @@ function simulationRun() {
             links.push(newLink);
         }
 
-        simulation.nodes(nodes);
+        simulation.nodes(nodes); //aggiorna la simulazione D3 con i nuovi nodi e link
         simulation.force("link").links(links);
-        simulation.alpha(1).restart();
+        simulation.alpha(1).restart(); //mposta la forza dei link e riavvia la simulazione con alpha(1).restart() per ricalcolare le posizioni.
 
-        if (node.children) {
+        if (node.children) { //se il nodo ha figli, aggiungili ricorsivamente con un ritardo
             setTimeout(() => {
-                node.children.forEach((child) => {
-                    addNodesRecursively(child, delay);
+                node.children.forEach((child) => { 
+                    addNodesRecursively(child, delay); //aggiungi i nodi figli ricorsivamente
                 });
             }, delay);
         }
@@ -165,18 +165,18 @@ function simulationRun() {
     // Funzioni di gestione del drag per i nodi
     function dragStarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
+        d.fx = d.x; //imposta la posizione fissa del nodo durante il trascinamento. Questo blocca il nodo alla posizione corrente, permettendo all'utente di trascinarlo.
         d.fy = d.y;
     }
 
     function dragged(event, d) {
-        d.fx = event.x;
+        d.fx = event.x; //aggiorna le coordinate fisse del nodo (fx e fy) con le coordinate correnti dell'evento di trascinamento (event.x e event.y). Questo permette di spostare il nodo seguendo il movimento del mouse.
         d.fy = event.y;
     }
 
-    function dragEnded(event, d) {
+    function dragEnded(event, d) { //Se non ci sono altri eventi di trascinamento in corso (!event.active), imposta il target di alpha a 0. Questo diminuisce l'energia della simulazione, permettendole di stabilizzarsi lentamente.
         if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
+        d.fx = null; //Rimuove le coordinate fisse del nodo, permettendogli di tornare a muoversi liberamente.
         d.fy = null;
     }
 
