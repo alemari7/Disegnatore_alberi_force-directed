@@ -141,7 +141,7 @@ function simulationRun() {
 
         simulation.nodes(nodes); //aggiorna la simulazione D3 con i nuovi nodi e link
         simulation.force("link").links(links);
-        simulation.alpha(1).restart(); //mposta la forza dei link e riavvia la simulazione con alpha(1).restart() per ricalcolare le posizioni.
+        simulation.alpha(1).restart(); //imposta la forza dei link e riavvia la simulazione con alpha(1).restart() per ricalcolare le posizioni.
 
         if (node.children) { //se il nodo ha figli, aggiungili ricorsivamente con un ritardo
             setTimeout(() => {
