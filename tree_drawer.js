@@ -36,13 +36,14 @@ function simulationRun() {
 
     // Genera un albero casuale con la profondità e il numero di figli specificati
     function generateRandomTree(depth, maxChildren) {
-        const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`;
+        const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`; //crea un nome univoco per il nodo, che include la profondità corrente (depth) e una stringa casuale generata usando Math.random().
+
         const children = [];
 
         const numChildren = getRandomInt(1, maxChildren);
-        for (let i = 0; i < numChildren; i++) {
-            if (depth < maxDepth) {
-                children.push(generateRandomTree(depth + 1, maxChildren));
+        for (let i = 0; i < numChildren; i++) { 
+            if (depth < maxDepth) { //se la profondità corrente (depth) è inferiore alla profondità massima (maxDepth), chiama ricorsivamente generateRandomTree per creare il sottoalbero del figlio, incrementando la profondità di 1.
+                children.push(generateRandomTree(depth + 1, maxChildren)); //aggiunge il sottoalbero generato all'array children
             }
         }
 
