@@ -3,8 +3,8 @@ const margin = { top: 20, right: 40, bottom: 20, left: 40 };
 const svgWidth = window.innerWidth * 1.7;
 const svgHeight = window.innerHeight * 3;
 
-const delay = 3000;         // valore del ritardo per l'aggiunta incrementale dei nodi
-let randomBool = true;    // variabile booleana per costruzione del grafo randomico o completo
+const delay = 5000;         // valore del ritardo per l'aggiunta incrementale dei nodi
+let randomBool = false;    // variabile booleana per costruzione del grafo randomico o completo
 
 // Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
@@ -142,8 +142,7 @@ function simulationRun() {
             data: node.data,
             depth: node.depth,
             color: getColor(node.depth),
-            x: node.data.x, // Utilizza le coordinate del nodo genitore
-            y: node.data.y
+            x: node.data.x, //Nel nuovo nodo newNode, utilizziamo direttamente le coordinate x e y del nodo genitore
         };
         nodes.push(newNode);
 
@@ -160,15 +159,17 @@ function simulationRun() {
         simulation.alpha(1).restart(); // Riavvia la simulazione con una nuova forza
 
         // Calcola l'offset per distribuire i figli orizzontalmente
-        const numSiblings = node.parent ? node.parent.children.length : 1;
+        const numSiblings = node.parent ? node.parent.children.length : 1; 
         const siblingIndex = node.parent ? node.parent.children.indexOf(node) : 0;
-        const offset = ((numSiblings - 1) * 20) / 2 - (20 * siblingIndex);
+        const offset = ((numSiblings - 1) * 20) / 2 - (20 * siblingIndex); // Calcola l'offset per distribuire i figli orizzontalmente
 
         if (node.children) { // Se il nodo ha figli, aggiungi i figli con un ritardo
             setTimeout(() => {
                 node.children.forEach((child, index) => {
                     // Calcola le coordinate x e y per posizionare i figli dopo il nodo corrente
-                    const childX = newNode.x + offset + (index * 20);
+                    const childX = newNode.x + offset + (index * 20); //calcoliamo le coordinate childX e childY per ciascun figlio. childX utilizza l'offset
+                                                                      // calcolato per posizionare i figli dopo il genitore, 
+                                                                      //mentre childY aggiunge un offset verticale per spaziare i figli lungo l'asse y.
                     const childY = newNode.y + 100; // Aggiungi un offset verticale per i figli
 
                     // Aggiorna le coordinate nel nodo e ricorsivamente aggiungi i figli
@@ -223,8 +224,7 @@ scrollableDiv.scrollTop = halfContentHeight;
 
 // Funzione per cambiare il valore di randomBool quando il bottone viene cliccato
 function toggleRandom() {
-    const switchElement = document.getElementById('toggleSwitch');
-    randomBool = switchElement.checked;
-    console.log("Random mode:", randomBool);
+    randomBool = !randomBool; // Inverte il valore di randomBool
+    console.log(`Valore di randomBool cambiato a: ${randomBool}`);
 }
 
