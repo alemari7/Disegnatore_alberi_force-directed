@@ -143,6 +143,7 @@ function simulationRun() {
             depth: node.depth,
             color: getColor(node.depth),
             x: node.data.x, //Nel nuovo nodo newNode, utilizziamo direttamente le coordinate x e y del nodo genitore
+            y: node.data.y
         };
         nodes.push(newNode);
 
@@ -224,7 +225,8 @@ scrollableDiv.scrollTop = halfContentHeight;
 
 // Funzione per cambiare il valore di randomBool quando il bottone viene cliccato
 function toggleRandom() {
-    randomBool = !randomBool; // Inverte il valore di randomBool
-    console.log(`Valore di randomBool cambiato a: ${randomBool}`);
+    const switchElement = document.getElementById('toggleSwitch');
+    randomBool = switchElement.checked;
+    console.log("Random mode:", randomBool);
 }
 
