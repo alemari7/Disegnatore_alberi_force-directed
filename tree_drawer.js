@@ -3,8 +3,8 @@ const margin = { top: 20, right: 40, bottom: 20, left: 40 };
 const svgWidth = window.innerWidth * 1.7;;
 const svgHeight = window.innerHeight * 3;;
 
-const delay = 0;         // valore del ritardo per l'aggiunta incrementale dei nodi
-const randomBool = false;   // variabile booleana per costruzione del grafo randomico o completo
+const delay = 2000;         // valore del ritardo per l'aggiunta incrementale dei nodi
+const randomBool = true;    // variabile booleana per costruzione del grafo randomico o completo
 
 // Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
