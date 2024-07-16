@@ -1,10 +1,10 @@
 // Definisci i margini e le dimensioni del contenitore SVG
 const margin = { top: 20, right: 40, bottom: 20, left: 40 };
-const svgWidth = window.innerWidth * 1.7;;
-const svgHeight = window.innerHeight * 3;;
+const svgWidth = window.innerWidth * 1.7;
+const svgHeight = window.innerHeight * 3;
 
-const delay = 2000;         // valore del ritardo per l'aggiunta incrementale dei nodi
-const randomBool = true;    // variabile booleana per costruzione del grafo randomico o completo
+const delay = 5000;         // valore del ritardo per l'aggiunta incrementale dei nodi
+let randomBool = false;    // variabile booleana per costruzione del grafo randomico o completo
 
 // Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
@@ -17,7 +17,7 @@ const g = svg.append("g")
 
 // Configura lo zoom con D3, specificando i limiti di scala e l'evento di zoom
 const zoom = d3.zoom()
-    .scaleExtent([0.25, 3])
+    .scaleExtent([0.01, 3])
     .on("zoom", (event) => {
         g.attr("transform", event.transform);
     });
@@ -33,13 +33,13 @@ document.getElementById('scrollableDiv').addEventListener('wheel', function(even
 function simulationRun() {
     // Ottieni i valori di profondità massima e numero massimo di figli dagli input HTML
     const maxDepth = parseInt(document.getElementById('depth').value);
-    const maxChildren = parseInt(document.getElementById('maxChildren').value); 
+    const maxChildren = parseInt(document.getElementById('maxChildren').value);
 
     // Genera un albero casuale con la profondità e il numero di figli specificati
     function generateRandomTree(depth, maxChildren) {
         const name = `node_${depth}_${Math.random().toString(36).substring(2, 7)}`; // Genera un nome univoco per il nodo con una sottostringa di esempio
 
-        const children = []; 
+        const children = [];
         var numChildren;
 
         if (randomBool) { // Costruzione del grafo randomico
@@ -88,7 +88,7 @@ function simulationRun() {
         .on("tick", ticked);
 
     // Funzione per aggiornare la posizione dei nodi e dei link ad ogni "tick" della simulazione
-    function ticked() { 
+    function ticked() {
         const link = g.selectAll(".link") // Seleziona tutti gli elementi con classe "link"
             .data(links, d => d.target.id);
 
@@ -96,7 +96,7 @@ function simulationRun() {
             .attr("class", "link")
             .merge(link)
             .attr("stroke-width", 1) // Imposta lo spessore del bordo del link
-            .attr("x1", d => d.source.x) 
+            .attr("x1", d => d.source.x)
             .attr("y1", d => d.source.y)
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
@@ -107,9 +107,9 @@ function simulationRun() {
             .data(nodes, d => d.id);
 
         const nodeEnter = node.enter().append("circle")
-            .attr("class", "node") 
+            .attr("class", "node")
             .attr("r", 7)
-            .attr("fill", d => d.color) 
+            .attr("fill", d => d.color)
             .call(d3.drag() // Aggiungi la funzionalità di trascinamento ai nodi
                 .on("start", dragStarted)
                 .on("drag", dragged)
@@ -123,7 +123,7 @@ function simulationRun() {
 
         node.exit().remove();
 
-        if (nodes.length === root.descendants().length) { 
+        if (nodes.length === root.descendants().length) {
             lastNodeTime = performance.now(); // Memorizza l'istante in cui si inserisce l'ultimo nodo
             const executionTime = (lastNodeTime - startTime) / 1000;
             console.log(`Tempo totale di esecuzione fino all'ultimo nodo: ${executionTime.toFixed(3)} secondi`);
@@ -132,7 +132,7 @@ function simulationRun() {
 
     // Aggiungi ricorsivamente i nodi e i link alla simulazione con un ritardo specificato
     function addNodesRecursively(node, delay) {
-        if (!startTime) { 
+        if (!startTime) {
             startTime = performance.now();
         }
 
@@ -141,8 +141,8 @@ function simulationRun() {
             data: node.data,
             depth: node.depth,
             color: getColor(node.depth),
-            x: node.parent ? node.parent.data.x + getRandomOffset() : svgWidth / 2, // Posiziona il nodo vicino al centro e verifica la condizione con operatore ?
-            y: node.parent ? node.parent.data.y + getRandomOffset() : svgHeight / 2
+            x: node.data.x, // Utilizza le coordinate del nodo genitore
+            y: node.data.y
         };
         nodes.push(newNode);
 
@@ -158,12 +158,21 @@ function simulationRun() {
         simulation.force("link").links(links);
         simulation.alpha(1).restart(); // Riavvia la simulazione con una nuova forza
 
-        node.data.x = newNode.x;
-        node.data.y = newNode.y;
+        // Calcola l'offset per distribuire i figli orizzontalmente
+        const numSiblings = node.parent ? node.parent.children.length : 1;
+        const siblingIndex = node.parent ? node.parent.children.indexOf(node) : 0;
+        const offset = ((numSiblings - 1) * 20) / 2 - (20 * siblingIndex);
 
         if (node.children) { // Se il nodo ha figli, aggiungi i figli con un ritardo
             setTimeout(() => {
-                node.children.forEach((child) => {
+                node.children.forEach((child, index) => {
+                    // Calcola le coordinate x e y per posizionare i figli dopo il nodo corrente
+                    const childX = newNode.x + offset + (index * 20);
+                    const childY = newNode.y + 100; // Aggiungi un offset verticale per i figli
+
+                    // Aggiorna le coordinate nel nodo e ricorsivamente aggiungi i figli
+                    child.data.x = childX;
+                    child.data.y = childY;
                     addNodesRecursively(child, delay);
                 });
             }, delay);
@@ -190,7 +199,7 @@ function simulationRun() {
     }
 
     function dragEnded(event, d) { // Funzione per terminare il trascinamento di un nodo
-        if (!event.active) simulation.alphaTarget(0); 
+        if (!event.active) simulation.alphaTarget(0);
         d.fx = null; // Imposta la posizione fissa del nodo su null
         d.fy = null;
     }
@@ -201,7 +210,7 @@ function simulationRun() {
 
 // Funzione per eseguire la simulazione al click di un pulsante
 function onClick() {
-    this.simulationRun();
+    simulationRun(); // Chiamata alla funzione simulationRun() per generare l'albero
 }
 
 // Centrare la scrollbar nel div scrollabile
@@ -210,3 +219,9 @@ var halfContentWidth = scrollableDiv.scrollWidth / 4.25;
 scrollableDiv.scrollLeft = halfContentWidth;
 var halfContentHeight = scrollableDiv.scrollHeight / 2.75;
 scrollableDiv.scrollTop = halfContentHeight;
+
+// Funzione per cambiare il valore di randomBool quando il bottone viene cliccato
+function toggleRandom() {
+    randomBool = !randomBool; // Inverte il valore di randomBool
+    console.log(`Valore di randomBool cambiato a: ${randomBool}`);
+}
