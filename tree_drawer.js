@@ -34,6 +34,7 @@ function simulationRun() {
     // Ottieni i valori di profondità massima e numero massimo di figli dagli input HTML
     const maxDepth = parseInt(document.getElementById('depth').value);
     const maxChildren = parseInt(document.getElementById('maxChildren').value);
+    const delay = parseInt(document.getElementById('delay').value);
 
     // Genera un albero casuale con la profondità e il numero di figli specificati
     function generateRandomTree(depth, maxChildren) {
@@ -225,3 +226,4 @@ function toggleRandom() {
     randomBool = !randomBool; // Inverte il valore di randomBool
     console.log(`Valore di randomBool cambiato a: ${randomBool}`);
 }
+
