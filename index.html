@@ -20,12 +20,17 @@
             </div>
             <div class="header-controls">
                 <label for="delay">Delay (ms):</label>
-                <input type="number" id="delay" value="5000" min="1000" max="10000">
+                <input type="number" id="delay" value="3000" min="1000" max="10000">
             </div>
             <button class="header-button" onclick="onClick()">Generate!</button>
         </div>
         <div class="header-controls">
-            <button class="header-button" onclick="toggleRandom()">Toggle Random</button>
+            <span>Toggle Random:</span>
+            
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch" checked onclick="toggleRandom()">
+                <span class="slider"></span>
+            </label>        
         </div>
         </div>
     </header>

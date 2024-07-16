@@ -3,8 +3,8 @@ const margin = { top: 20, right: 40, bottom: 20, left: 40 };
 const svgWidth = window.innerWidth * 1.7;
 const svgHeight = window.innerHeight * 3;
 
-const delay = 5000;         // valore del ritardo per l'aggiunta incrementale dei nodi
-let randomBool = false;    // variabile booleana per costruzione del grafo randomico o completo
+const delay = 3000;         // valore del ritardo per l'aggiunta incrementale dei nodi
+let randomBool = true;    // variabile booleana per costruzione del grafo randomico o completo
 
 // Seleziona l'elemento SVG e imposta la sua larghezza e altezza, includendo i margini
 const svg = d3.select("svg")
@@ -223,7 +223,8 @@ scrollableDiv.scrollTop = halfContentHeight;
 
 // Funzione per cambiare il valore di randomBool quando il bottone viene cliccato
 function toggleRandom() {
-    randomBool = !randomBool; // Inverte il valore di randomBool
-    console.log(`Valore di randomBool cambiato a: ${randomBool}`);
+    const switchElement = document.getElementById('toggleSwitch');
+    randomBool = switchElement.checked;
+    console.log("Random mode:", randomBool);
 }
 
