@@ -24,23 +24,11 @@ Questo progetto dimostra come creare un layout a albero dinamico con animazione 
  
    - **Misurazione dei Tempi di Esecuzione**: Misurazione del tempo totale di esecuzione della simulazione force-directed e stampa del risultato sulla console. Tempo totale di esecuzione rilevato con profondità 5 e numero massimo di figli pari a 5: 15.014 secondi
 
-- **force-directed-classico.js**: File JavaScript aggiunto per implementare un algoritmo force-directed classico con D3.js. Questo file contiene:
-
-  - **Inizializzazione**: Configurazione del canvas SVG e definizione delle dimensioni del layout.
-
-  - **Generazione dei Nodi e Collegamenti**: Creazione casuale di nodi e collegamenti tra di essi.
-
-  - **Simulazione Force-Directed**: Utilizzo della simulazione force-directed di D3 per posizionare dinamicamente i nodi e i collegamenti.
-
-  - **Gestione del Drag-and-Drop**: Implementazione del drag-and-drop per interagire con i nodi.
-
-  - **Misurazione dei Tempi di Esecuzione**: Misurazione del tempo totale di esecuzione della simulazione force-directed e stampa del risultato sulla console. Tempo totale di esecuzione: 5.211 secondi
-
 - **index.css**: File CSS che definisce lo stile visivo per l'header, i controlli, il contenitore della visualizzazione, e i nodi e collegamenti dell'albero. 
 
 ## Utilizzo
 
-1. Clona la repository o scarica i file (`index.html`, `classico.html`, `tree_drawer.js`, `force-directed-classico.js`, e `index.css`).
+1. Clona la repository o scarica i file (`index.html`, `tree_drawer.js`, e `index.css`).
 2. Apri `index.html` e `classico.html` in un browser web che supporta JavaScript e SVG.
 3. Il layout a albero con nodi animati si renderizzerà nella finestra del browser. I nodi appariranno gradualmente, dimostrando la struttura gerarchica.
 
